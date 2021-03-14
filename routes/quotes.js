@@ -25,6 +25,8 @@ router.get('/error', (req, res, next) => {
 
 /* GET individual quote route */
 router.get('/:id', (req, res, next) => {
+
+  // Log quote handler indication
   console.log(`Quote ${req.params.id} route called`);
 
   /* TODO 3: Check if the requested quote exists 
@@ -34,8 +36,14 @@ router.get('/:id', (req, res, next) => {
         * Provide an error message
         * Forward the error to the global error handler
   */
-
-  res.render('quote', { title: 'Code Quote', quote: quotes[req.params.id] });
+  if (quotes[req.params.id]) {
+    res.render('quote', { title: 'Code Quote', quote: quotes[req.params.id] });
+  } else {
+    const err = new Error();
+    err.status = 404;
+    err.message = `Looks like the quote you requested doesn't exist.`
+    next(err);
+  }
 });
 
 module.exports = router;
